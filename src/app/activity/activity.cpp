@@ -198,8 +198,7 @@ void build_main_page()
       .textOpacity(LV_OPA_80);
     small = Style::Create(ws_get_mainbar_style(), true);
     small.textFont(&Ubuntu_16px)
-      .textOpacity(LV_OPA_80);
-
+      .textOpacity(LV_OPA_100);
     AppPage& screen = activityApp.mainPage(); // This is parent for all main screen widgets
 
     arcStepcounter = Arc(&screen, 0, 360);
@@ -314,16 +313,13 @@ static void activity_reset_cb(lv_obj_t * obj, lv_event_t event)
         
         if ( strcmp( answer, YES) == 0 ) { // STOP HAS BEEN PRESSED
             Sync = false;
-    
             /* Reset counter */
             end_time = std::time(0);
             message = combine();
-            
             bma_reset_stepcounter(); 
             temp = getTemp();
             r_time = start_time;
             start_time = std::time(0);
-            /*
             /* Refresh display immediately for user feedback */
             refresh_main_page();
         }
