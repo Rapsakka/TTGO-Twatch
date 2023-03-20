@@ -86,12 +86,9 @@ static void build_settings();
 static void activity_activate_cb();
 static void activity_reset_cb(lv_obj_t * obj, lv_event_t event);
 
-
-
 float getTemp(){
 
 TTGOClass *ttgo = TTGOClass::getWatch();
-    
     return ttgo->bma->temperature();
 }
 
@@ -124,20 +121,16 @@ std::string combine(){
     return resultant;
 }
 
-class UpdateStats : public NimBLECharacteristicCallbacks{
+class UpdateStats : public NimBLECharacteristicCallbacks{ //setting characteristic based on if syncing or ending session
     void onRead(NimBLECharacteristic    *pCharacteristic){
-        
         if(Sync){
             pCharacteristic->setValue( message );
         }
         else if (!Sync){
-            
             pCharacteristic->setValue( message );
         }
     }
 };
-
-
 
 /*
  * setup routine for application
@@ -157,10 +150,9 @@ void activity_app_setup() {
     // Executed when user click "refresh" button
     activityApp.synchronizeActionHandler([](SyncRequestSource source) {
         
-        //refresh_progress(false); //refresh ongoing session
+        //refresh ongoing session
         Sync = true;
         message = combine();
-        //SOME SENDING/WRITING FUNCTION HERE
 
         motor_vibe(20);
     });
@@ -243,7 +235,6 @@ void build_main_page()
     lblDistachievement.text("0")
         .style(small, true)
         .alignOrig0(arcDistance, LV_ALIGN_CENTER);
-
     // ==============  ADDED  ===============
     arcCalorie= Arc(&screen, 0, 360);
     arcCalorie.start(0).end(0).rotation(90)
@@ -282,11 +273,8 @@ void refresh_main_page()
     int w ;
     ss >> w ;
     calorie = dif_seconds* 21 * w/(12000) ; //calorie counting T × MET × 3.5 × W / (200 × 60) 
-
     if( uint32_t(dif_seconds) % 10 == 0){ //every 10s get running average of temperature
-
-    temp = (temp+getTemp())/2;
-
+    temp = (temp+getTemp())/2; // running average
     }
     /// ===========  ADDED  =========
     log_d("Refresh activity: %d steps", stp);
@@ -304,7 +292,6 @@ void refresh_main_page()
     snprintf( buff, sizeof( buff ), "%d%%", gDist == 0 ? 0 : 100 * dist / gDist );
     lblDistachievement.text(buff).realign();
     arcDistance.end( gDist == 0 ? 0 : 360 * dist / gDist );
-
     //=============  ADDED  ============
     //Calories 
     snprintf( buff, sizeof( buff ), "%.1f kcal", calorie );
@@ -337,12 +324,6 @@ static void activity_reset_cb(lv_obj_t * obj, lv_event_t event)
             r_time = start_time;
             start_time = std::time(0);
             /*
-            std::string mes  ("Start time: ");
-            const int length = mes.length();
-            char* message = new char[length + 1];
-            strcpy( message, mes.c_str() );
-            const char* m = const_cast<char*>(message);
-            */
             /* Refresh display immediately for user feedback */
             refresh_main_page();
         }
