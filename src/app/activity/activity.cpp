@@ -70,7 +70,7 @@ static float calorie,temp;
 uint32_t stp;
 uint32_t dist;
 std::string message;
-static std::time_t start_time, end_time, r_time;
+static std::time_t start_time, end_time, r_time; // r_time is to keep ended session start time saved  
 
 static bool Sync  = true;
 
@@ -124,7 +124,6 @@ std::string combine(){
 class UpdateStats : public NimBLECharacteristicCallbacks{ //setting characteristic based on if syncing or ending session
     void onRead(NimBLECharacteristic    *pCharacteristic){
         if(Sync){
-            end_time = 0; 
             pCharacteristic->setValue( message );
         }
         else if (!Sync){
@@ -153,6 +152,8 @@ void activity_app_setup() {
         
         //refresh ongoing session
         Sync = true;
+        end_time = 0;  // to keep end time as zero
+        r_time = start_time; // switch for syncing
         message = combine();
 
         motor_vibe(20);
@@ -319,8 +320,8 @@ static void activity_reset_cb(lv_obj_t * obj, lv_event_t event)
             message = combine();
             bma_reset_stepcounter(); 
             temp = getTemp();
-            r_time = start_time;
-            start_time = std::time(0);
+            r_time = start_time; //save the start time of ended session
+            start_time = std::time(0); //start new session time
             /* Refresh display immediately for user feedback */
             refresh_main_page();
         }
