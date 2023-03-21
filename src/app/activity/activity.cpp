@@ -124,6 +124,7 @@ std::string combine(){
 class UpdateStats : public NimBLECharacteristicCallbacks{ //setting characteristic based on if syncing or ending session
     void onRead(NimBLECharacteristic    *pCharacteristic){
         if(Sync){
+            end_time = 0; 
             pCharacteristic->setValue( message );
         }
         else if (!Sync){
