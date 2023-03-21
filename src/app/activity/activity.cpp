@@ -89,7 +89,7 @@ static void activity_reset_cb(lv_obj_t * obj, lv_event_t event);
 float getTemp(){
 
 TTGOClass *ttgo = TTGOClass::getWatch();
-    return ttgo->bma->temperature();
+    return ttgo->bma->temperature()-10.0;
 }
 
 std::string combine(){
